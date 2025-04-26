@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'maven-publish'
+    id 'signing'
 }
 
 android {
@@ -24,20 +25,47 @@ android {
     publishing {
         singleVariant("release") {
             withSourcesJar()
+            withJavadocJar()
         }
     }
 }
 
 publishing {
     publications {
-        release(MavenPublication) {
-            group = "com.github.s1204IT"
-            artifactId = "DchaService"
-            version = "1.0"
-
+        mavenJava(MavenPublication) {
+            group = rootProject.POM_GROUP
+            artifactId = rootProject.POM_ID
+            version = rootProject.POM_VERSION
             afterEvaluate {
                 from components.release
             }
+
+            pom {
+                name = rootProject.POM_NAME
+                description = rootProject.POM_DESCRIPTION
+                url = rootProject.POM_URL
+                scm {
+                    connection = rootProject.POM_SCM_CONNECTION
+                    url = rootProject.POM_SCM_URL
+                }
+                licenses {
+                    license {
+                        name = rootProject.POM_LICENCE_NAME
+                        url = rootProject.POM_LICENCE_URL
+                    }
+                }
+                developers {
+                    developer {
+                        name = rootProject.POM_DEVELOPER_NAME
+                        url = rootProject.POM_DEVELOPER_URL
+                    }
+                }
+            }
         }
     }
+}
+
+signing {
+    useGpgCmd()
+    sign publishing.publications.mavenJava
 }
